@@ -3,9 +3,12 @@ package agora_chat
 import (
 	"errors"
 	"github.com/AgoraIO/Tools/DynamicKey/AgoraDynamicKey/go/src/chatTokenBuilder"
+	"net/http"
+	"time"
 )
 
 type Client struct {
+	HTTP           *http.Client `json:"-"`
 	BaseURL        string
 	appID          string
 	appCertificate string
@@ -22,10 +25,18 @@ func NewClient(appID, appCertificate string, baseURL string, options ...ClientOp
 		return nil, errors.New("app Certificate  is empty")
 	}
 
+	tr := http.DefaultTransport.(*http.Transport).Clone() //nolint:forcetypeassert
+	tr.MaxIdleConnsPerHost = 5
+	tr.IdleConnTimeout = 59 * time.Second // load balancer's idle timeout is 60 sec
+	tr.ExpectContinueTimeout = 2 * time.Second
 	client := &Client{
 		appID:          appID,
 		appCertificate: appCertificate,
 		BaseURL:        baseURL,
+		HTTP: &http.Client{
+			Timeout:   6 * time.Second,
+			Transport: tr,
+		},
 	}
 	for _, fn := range options {
 		fn(client)
