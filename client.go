@@ -75,3 +75,13 @@ func (c *Client) CreateUserToken(userID string, expire uint32) (string, error) {
 func (c *Client) createUserToken(Uuid string, expire uint32) (string, error) {
 	return chatTokenBuilder.BuildChatUserToken(c.appID, c.appCertificate, Uuid, expire)
 }
+
+// Users returns a new UsersClient.
+func (c *Client) Users() *UsersClient {
+	return &UsersClient{client: c}
+}
+
+// Groups returns a new GroupsClient.
+func (c *Client) Groups() *GroupsClient {
+	return &GroupsClient{client: c}
+}

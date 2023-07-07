@@ -25,18 +25,37 @@ userToken, err := client.CreateUserToken("wukong", 2*60*60)
 ```
 
 ### Users
-Create users
+Creating users
 ```
 import chat "github.com/CarlsonYuan/agora-chat-go/v2"
-result, err := client.CreateUsers(ctx, &chat.User{Username: "test_user_1", Password: "1", Nickname: "test_user_1"},
+result, err := client.User().CreateUsers(ctx,
+    &chat.User{Username: "test_user_1", Password: "1", Nickname: "test_user_1"},
     &chat.User{Username: "test_user_2", Password: "2", Nickname: "test_user_2"},
     &chat.User{Username: "test_user_3", Password: "3", Nickname: "test_user_3"})
 ```
-Delete user
+Deleting user
 ```
-result, err := client.DeleteUser(ctx, "tese_user_1")
+result, err := client.User().DeleteUser(ctx, "tese_user_1")
 ```
+### Groups
+Creating group
+```
+result, err := client.Groups().CreateGroups(ctx,
+    &chat.Group{
+        Groupname: "test_group_1",
+        Desc:      "test",
+        Public:    true,
+        Maxusers:  300,
+        Owner:     "test_user_1",
+        Members: []string{
+            "test_user_2",
+            "test_user_3"}})
+```
+Deleting group
+```
+result, err := client.Groups().DeleteGroup(ctx, "219488492519425")
+```
+
 ## Features ToDos 
-- [ ] Groups
 - [ ] Chatrooms
 - [ ] Messages

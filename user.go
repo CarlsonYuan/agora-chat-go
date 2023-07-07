@@ -9,6 +9,11 @@ import (
 	"path"
 )
 
+// UsersClient is a specialized client used to interact with the Users endpoints.
+type UsersClient struct {
+	client *Client
+}
+
 type User struct {
 	Created   int64  `json:"created"`
 	Nickname  string `json:"nickname"`
@@ -33,7 +38,7 @@ func (u *User) UnmarshalJSON(data []byte) error {
 }
 
 // CreateUsers creates the given users.
-func (c *Client) CreateUsers(ctx context.Context, users ...*User) (*UsersResponse, error) {
+func (c *UsersClient) CreateUsers(ctx context.Context, users ...*User) (*UsersResponse, error) {
 	if len(users) == 0 {
 		return nil, errors.New("users are not set")
 	}
@@ -41,18 +46,18 @@ func (c *Client) CreateUsers(ctx context.Context, users ...*User) (*UsersRespons
 	req := users
 
 	var resp UsersResponse
-	err := c.makeRequest(ctx, http.MethodPost, "users", nil, req, &resp)
+	err := c.client.makeRequest(ctx, http.MethodPost, "users", nil, req, &resp)
 	return &resp, err
 }
 
 // DeleteUser deletes the user with the given userID(username).
-func (c *Client) DeleteUser(ctx context.Context, userID string) (*UsersResponse, error) {
+func (c *UsersClient) DeleteUser(ctx context.Context, userID string) (*UsersResponse, error) {
 	if userID == "" {
 		return nil, errors.New("user ID is empty")
 	}
 	values := url.Values{}
 	p := path.Join("users", url.PathEscape(userID))
 	var resp UsersResponse
-	err := c.makeRequest(ctx, http.MethodDelete, p, values, nil, &resp)
+	err := c.client.makeRequest(ctx, http.MethodDelete, p, values, nil, &resp)
 	return &resp, err
 }
