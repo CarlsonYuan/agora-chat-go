@@ -36,3 +36,7 @@ Delete user
 ```
 result, err := client.DeleteUser(ctx, "tese_user_1")
 ```
+## Features ToDos 
+- [ ] Groups
+- [ ] Chatrooms
+- [ ] Messages
