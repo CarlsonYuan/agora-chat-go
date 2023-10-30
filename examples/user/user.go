@@ -34,4 +34,32 @@ func main() {
 		fmt.Printf(" > Item NotifierName: %s\n", item.NotifierName)
 	}
 
+	// Delete User
+
+	uID := "self_test_3"
+	_, err = client.DeleteUser(context.Background(), uID)
+	if err != nil {
+		fmt.Printf("error deleting user: %v\n", err)
+		return
+	}
+	fmt.Printf("\n")
+	fmt.Printf("user: %s has been deleted\n", uID)
+
+	// Create users
+	u1 := agora_chat.NewUser("self_test_3")
+	u2 := agora_chat.NewUser("self_test_4")
+	resp, err = client.CreateUsers(context.Background(), &u1, &u2)
+	if err != nil {
+		fmt.Printf("error creating users: %v\n", err)
+		return
+	}
+	fmt.Printf("\n")
+	fmt.Printf("All list for user creation...\n")
+	for _, item := range resp.Users {
+		fmt.Printf(" > Create user success for %s UUID: %s\n", item.ID, item.Uuid)
+	}
+	for _, item := range resp.Data {
+		fmt.Printf(" > Create user:%s failure cause %s \n", item.ID, item.Reason)
+	}
+
 }
