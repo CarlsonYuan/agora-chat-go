@@ -31,21 +31,27 @@ type User struct {
 	Password  string      `json:"password"`
 }
 
+// NewUser create new instance of User
+func NewUser(uID string) User {
+	u := User{}
+	u.ID = uID
+	u.Password = uID
+	return u
+}
+
 type PushInfo struct {
 	DeviceID     string `json:"device_Id"`
 	DeviceToken  string `json:"device_token"`
 	NotifierName string `json:"notifier_name"`
 }
 
-func (u *User) SetDefaultPassword() {
-	if u.Password == "" {
-		u.Password = u.ID
-	}
+type CreateUserError struct {
+	ID     string `json:"username"`
+	Reason string `json:"registerUserFailReason"`
 }
-
 type UsersResponse struct {
-	Users []*User `json:"entities"`
-	Data  []any   `json:"data"`
+	Users []*User           `json:"entities"`
+	Data  []CreateUserError `json:"data"`
 	Response
 }
 
