@@ -3,6 +3,7 @@ package agora_chat
 import (
 	"errors"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/AgoraIO/Tools/DynamicKey/AgoraDynamicKey/go/src/chatTokenBuilder"
@@ -14,6 +15,13 @@ type Client struct {
 	appID          string
 	appCertificate string
 	appToken       string
+}
+
+func NewClientFromEnvVars() (*Client, error) {
+	appID := os.Getenv("AGORA_APP_ID")
+	appCertificate := os.Getenv("AGORA_APP_CERTIFICATE")
+	baseURL := os.Getenv("AGORA_CHAT_BASEURL")
+	return New(appID, appCertificate, baseURL)
 }
 
 func New(appID, appCertificate string, baseURL string) (*Client, error) {

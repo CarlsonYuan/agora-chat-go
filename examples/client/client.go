@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	_, err := agora_chat.New("YOUR_APP_ID_HERE", "YOUR_APP_CERTIFICATE_HERE", "YOUR_BASE_URL_HERE")
+	_, err := agora_chat.NewClientFromEnvVars()
 	if err != nil {
 		fmt.Printf("error generating token: %v\n", err)
 		return
