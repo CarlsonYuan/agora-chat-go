@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	agora_chat "github.com/CarlsonYuan/agora-chat-go"
+	"github.com/jedib0t/go-pretty/table"
 )
 
 func main() {
@@ -15,8 +16,21 @@ func main() {
 	}
 
 	// send upload log cmd
-	client.SendUploadLogsCommand(context.Background(), "self_test_1", "self_test_2")
+	// client.SendUploadLogsCommand(context.Background(), "demo_user_1", "demo_user_2")
 
-	// list log files
-	client.ListDeviceLogs(context.Background(), "self_test_1")
+	// list log files table
+	u := "demo_user_1"
+	resp, _ := client.ListDeviceLogs(context.Background(), u)
+
+	t := table.NewWriter()
+	tTemp := table.Table{}
+	tTemp.Render()
+	fmt.Println(t.Render())
+	t.AppendHeader(table.Row{"User ID", "Upload Time", "File UUID", "System Version", "SDK Version"})
+	for _, item := range resp.LogFiles {
+		t.AppendRow(table.Row{item.LoginUsername, item.UploadDate, item.LogfileUUID, item.OsVersion, item.SdkVersion})
+		client.DownloadFile(item.LogfileUUID, fmt.Sprintf("tmp/%s/%s", item.AppKey, item.LogfileUUID))
+	}
+	fmt.Println(t.Render())
+
 }
