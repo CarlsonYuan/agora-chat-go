@@ -28,8 +28,13 @@ func main() {
 	fmt.Println(t.Render())
 	t.AppendHeader(table.Row{"User ID", "Upload Time", "File UUID", "System Version", "SDK Version"})
 	for _, item := range resp.LogFiles {
+
 		t.AppendRow(table.Row{item.LoginUsername, item.UploadDate, item.LogfileUUID, item.OsVersion, item.SdkVersion})
-		client.DownloadFile(item.LogfileUUID, fmt.Sprintf("tmp/%s/%s", item.AppKey, item.LogfileUUID))
+
+		err = client.DownloadFile(item.LogfileUUID, fmt.Sprintf("tmp/%s/", item.AppKey), item.LogfileUUID+".gzip")
+		if err != nil {
+			fmt.Printf("err download file : %v\n", err)
+		}
 	}
 	fmt.Println(t.Render())
 

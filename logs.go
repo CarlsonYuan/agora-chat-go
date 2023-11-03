@@ -57,7 +57,7 @@ func (c *Client) ListDeviceLogs(ctx context.Context, uID string) (*DeviceLogsLis
 	return &devicelogs, err
 }
 
-func (c *Client) DownloadFile(fileUuid string, fileName string) error {
+func (c *Client) DownloadFile(fileUuid string, baseDir string, fileName string) error {
 
 	u, err := url.Parse(c.baseURL)
 	if err != nil {
@@ -75,8 +75,9 @@ func (c *Client) DownloadFile(fileUuid string, fileName string) error {
 	if response.StatusCode != 200 {
 		return errors.New("Received non 200 response code")
 	}
+	EnsureBaseDir(baseDir)
 	//Create a empty file
-	file, err := os.Create(fileName)
+	file, err := os.Create(baseDir + "/" + fileName)
 	if err != nil {
 		return err
 	}
@@ -89,4 +90,13 @@ func (c *Client) DownloadFile(fileUuid string, fileName string) error {
 	}
 
 	return nil
+}
+
+func EnsureBaseDir(fpath string) error {
+	baseDir := path.Dir(fpath)
+	info, err := os.Stat(baseDir)
+	if err == nil && info.IsDir() {
+		return nil
+	}
+	return os.MkdirAll(baseDir, 0755)
 }
