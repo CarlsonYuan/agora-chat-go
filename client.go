@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"os"
+	"regexp"
 	"time"
 
 	"github.com/AgoraIO/Tools/DynamicKey/AgoraDynamicKey/go/src/chatTokenBuilder"
@@ -46,6 +47,13 @@ func New(appID, appCertificate string, baseURL string) (*Client, error) {
 			Transport: tr,
 		},
 	}
+	match, _ := regexp.MatchString("#", appID)
+
+	if match { // if you are using AppKey + AppTken
+		client.appToken = appCertificate
+		return client, nil
+	}
+
 	token, err := client.createAppToken(uint32(time.Now().Unix()) + 7200) // 2h
 	if err != nil {
 		return nil, err
