@@ -40,7 +40,7 @@ func NewUser(uID string) User {
 }
 
 type PushInfo struct {
-	DeviceID     string `json:"device_Id"`
+	DeviceID     string `json:"device_id"`
 	DeviceToken  string `json:"device_token"`
 	NotifierName string `json:"notifier_name"`
 }
@@ -108,5 +108,17 @@ func (c *Client) QueryUsers(ctx context.Context, q *QueryUsersRequest) (*UsersRe
 
 	var resp UsersResponse
 	err := c.makeRequest(ctx, http.MethodGet, "users", values, nil, &resp)
+	return &resp, err
+}
+
+// UpdatePushInfo updates push notification info to the specified user
+func (c *Client) UpdatePushInfo(ctx context.Context, userID string, pushInfo *PushInfo) (*UsersResponse, error) {
+	if userID == "" {
+		return nil, errors.New("user ID is empty")
+	}
+	values := url.Values{}
+	p := path.Join("users", url.PathEscape(userID))
+	var resp UsersResponse
+	err := c.makeRequest(ctx, http.MethodPut, p, values, pushInfo, &resp)
 	return &resp, err
 }
