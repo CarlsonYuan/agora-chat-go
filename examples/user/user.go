@@ -49,10 +49,11 @@ func main() {
 	fmt.Printf("All push info list by %s...\n", user.ID)
 	for _, item := range pushInfos {
 		fmt.Printf(" > Item NotifierName: %s\n", item.NotifierName)
+		fmt.Printf(" > Item NotifierName: %s\n", item.DeviceID)
+		fmt.Printf(" > Item NotifierName: %s\n", item.DeviceToken)
 	}
 
 	// Delete User
-
 	uID := "demo_user_2"
 	_, err = client.DeleteUser(context.Background(), uID)
 	if err != nil {

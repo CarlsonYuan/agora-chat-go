@@ -31,10 +31,13 @@ func main() {
 
 		t.AppendRow(table.Row{item.LoginUsername, item.UploadDate, item.LogfileUUID, item.OsVersion, item.SdkVersion})
 
-		err = client.DownloadFile(item.LogfileUUID, fmt.Sprintf("tmp/%s/", item.AppKey), item.LogfileUUID+".gzip")
-		if err != nil {
-			fmt.Printf("err download file : %v\n", err)
-		}
+		// Uncomment the following part to download files
+		/*
+			err = client.DownloadFile(item.LogfileUUID, fmt.Sprintf("tmp/%s/", item.AppKey), item.LogfileUUID+".gzip")
+			if err != nil {
+				fmt.Printf("err download file : %v\n", err)
+			}
+		*/
 	}
 	fmt.Println(t.Render())
 
