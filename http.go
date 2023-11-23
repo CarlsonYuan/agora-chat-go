@@ -34,6 +34,7 @@ type Response struct {
 	ApplicationName string `json:"applicationName,omitempty"`
 	Organization    string `json:"organization,omitempty"`
 	Application     string `json:"application,omitempty"`
+	Cursor          string `json:"cursor,omitempty"`
 }
 
 func (c *Client) parseResponse(resp *http.Response, result interface{}) error {
@@ -126,6 +127,27 @@ func (c *Client) makeRequest(ctx context.Context, method, path string, params ur
 		fmt.Printf("\nRESPONSE:\n%s", string(respDump))
 	*/
 
+	if err != nil {
+		select {
+		case <-ctx.Done():
+			// If we got an error, and the context has been canceled,
+			// return context's error which is more useful.
+			return ctx.Err()
+		default:
+		}
+		return err
+	}
+
+	return c.parseResponse(resp, result)
+}
+func (c *Client) UploadingFile(ctx context.Context, method, path, contentType string, data io.Reader, result interface{}) error {
+	u, err := c.requestURL(path)
+	r, _ := http.NewRequest(method, u, data)
+	r.Header.Add("Authorization", "Bearer "+c.appToken)
+	r.Header.Add("Content-Type", contentType)
+
+	resp, err := http.DefaultClient.Do(r)
+	//resp, err := c.http.Do(r)
 	if err != nil {
 		select {
 		case <-ctx.Done():
